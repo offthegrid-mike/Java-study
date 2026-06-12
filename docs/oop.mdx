@@ -1,0 +1,88 @@
+---
+sidebar_position: 5
+---
+
+import RunnableJava from '@site/src/components/RunnableJava';
+import Flashcard from '@site/src/components/Flashcard';
+import Quiz from '@site/src/components/Quiz';
+
+# OOP Principles
+
+Object-oriented programming rests on four pillars: **encapsulation**,
+**inheritance**, **polymorphism**, and **abstraction**.
+
+## Encapsulation
+
+Hide internal state behind methods. Make fields `private` and expose controlled
+access through getters/setters, so the object enforces its own invariants.
+
+## Inheritance (`extends`)
+
+A subclass `extends` a superclass to reuse and specialize behavior. A `Dog`
+**is-a** `Animal`. Java supports single class inheritance (one direct
+superclass), but a class can implement many interfaces.
+
+## Polymorphism: overriding vs overloading
+
+- **Overriding** (runtime polymorphism): a subclass redefines an inherited
+  method with the same signature. The actual method called is decided at runtime
+  by the object's real type.
+- **Overloading** (compile-time): multiple methods share a name but differ in
+  parameter lists. The compiler picks one based on the arguments.
+
+## Abstraction
+
+Expose *what* an object does, not *how*. Achieved with abstract classes and
+interfaces that declare behavior without (full) implementation.
+
+## Interface vs abstract class
+
+| | Abstract class | Interface |
+| --- | --- | --- |
+| State (fields) | Yes | Only constants (default behavior via `default` methods) |
+| Multiple inheritance | No (one superclass) | Yes (implement many) |
+| Constructors | Yes | No |
+| Use when | Sharing code + state among closely related classes | Defining a capability/contract many unrelated types can adopt |
+
+Run an inheritance + override example:
+
+<RunnableJava code={`public class Main {
+  static class Animal {
+    String speak() { return "..."; }
+  }
+
+  static class Dog extends Animal {
+    @Override
+    String speak() { return "Woof"; }   // overriding
+  }
+
+  static class Cat extends Animal {
+    @Override
+    String speak() { return "Meow"; }   // overriding
+  }
+
+  public static void main(String[] args) {
+    // Polymorphism: the superclass reference, the subclass behavior
+    Animal[] animals = { new Dog(), new Cat(), new Animal() };
+    for (Animal a : animals) {
+      System.out.println(a.speak());   // resolved at runtime by real type
+    }
+  }
+}`} />
+
+## Flashcards
+
+<Flashcard cards={[
+  {id: 'oop-c1', front: 'Name the four OOP pillars.', back: 'Encapsulation, inheritance, polymorphism, abstraction.'},
+  {id: 'oop-c2', front: 'Overriding vs overloading?', back: 'Overriding = same signature in a subclass (runtime). Overloading = same name, different parameters (compile-time).'},
+  {id: 'oop-c3', front: 'Can a Java class extend more than one class?', back: 'No — single class inheritance. But it can implement many interfaces.'},
+  {id: 'oop-c4', front: 'When pick an interface over an abstract class?', back: 'When defining a capability/contract many unrelated types should adopt, or when you need multiple inheritance of type.'},
+]} />
+
+## Quiz
+
+<Quiz id="oop-quiz" questions={[
+  {id: 'oop-q1', prompt: 'Overriding is resolved:', options: ['At compile time', 'At runtime by the actual object type', 'Never'], correctIndex: 1, explanation: 'Overridden methods use dynamic dispatch based on the runtime type.'},
+  {id: 'oop-q2', prompt: 'Which can a class do?', options: ['Extend many classes', 'Implement many interfaces', 'Both freely'], correctIndex: 1, explanation: 'A class has one superclass but can implement multiple interfaces.'},
+  {id: 'oop-q3', prompt: 'Encapsulation primarily means:', options: ['Reusing parent code', 'Hiding internal state behind methods', 'Choosing methods at compile time'], correctIndex: 1, explanation: 'Encapsulation bundles state with behavior and hides the internals.'},
+]} />

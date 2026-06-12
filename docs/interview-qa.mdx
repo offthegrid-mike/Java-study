@@ -1,0 +1,16 @@
+---
+sidebar_position: 10
+---
+
+import InterviewQA from '@site/src/components/InterviewQA';
+
+# Common Interview Q&A
+
+<InterviewQA items={[
+  {id: 'qa-equals', question: 'Difference between == and equals()?', answer: '== compares references (identity) for objects; equals() compares value/content (when overridden). For primitives, == compares values.'},
+  {id: 'qa-hashcode', question: 'What is the equals/hashCode contract?', answer: 'Equal objects must return equal hashCodes. Overriding equals() without hashCode() breaks hash-based collections like HashMap/HashSet.'},
+  {id: 'qa-string', question: 'Why are Strings immutable?', answer: 'Safety, caching in the String pool, thread-safety, and safe use as map keys. Modifications create new String objects.'},
+  {id: 'qa-pbv', question: 'Is Java pass-by-value or pass-by-reference?', answer: 'Always pass-by-value. For objects, the value passed is the reference (a copy of it), so you can mutate the object but not reassign the caller\'s variable.'},
+  {id: 'qa-finalize', question: 'final vs finally vs finalize?', answer: 'final = constant/non-overridable/non-extendable; finally = block that always runs after try/catch; finalize() = deprecated GC callback before object reclamation.'},
+  {id: 'qa-checked', question: 'Checked vs unchecked exceptions?', answer: 'Checked (extend Exception) must be declared or caught at compile time; unchecked (extend RuntimeException) need not be.'},
+]} />
