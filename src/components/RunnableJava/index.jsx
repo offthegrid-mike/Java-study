@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 
 const WANDBOX_URL = 'https://wandbox.org/api/compile.json';
 
-export default function RunnableJava({code, compiler = 'openjdk-head'}) {
+export default function RunnableJava({code, compiler = 'openjdk-jdk-22+36'}) {
   const [source, setSource] = useState(code);
   const [output, setOutput] = useState('');
   const [running, setRunning] = useState(false);
