@@ -8,6 +8,7 @@ const sidebars = {
     'oop',
     'generics',
     'collections',
+    'dsa',
     'exceptions',
     'garbage-collection',
     'interview-qa',
