@@ -55,7 +55,7 @@ Most objects die young, so the heap is split into generations:
 
 Run a small program that drops a reference and hints at GC:
 
-<RunnableJava code={`public class Main {
+<RunnableJava code={`class Main {
   static class Resource {
     final String name;
     Resource(String name) { this.name = name; }
