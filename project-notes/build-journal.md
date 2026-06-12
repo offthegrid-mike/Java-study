@@ -17,3 +17,4 @@ Loop memory: one entry per completed task. On resume, read this first.
 - Task 10 DONE (RunnableJava + mocked-fetch smoke test, full suite green). next: Task 11
 - Task 11 DONE (landing page, sidebar order, CSS; build deferred to Task 12 once docs exist). next: Task 12
 - Task 12 DONE (all 10 docs authored; build compiles all MDX, only /progress link pending Task 13). next: Task 13
+- Task 13 DONE (progress dashboard; FULL build clean, 0 broken links; removed scaffold markdown-page). next: Task 14
