@@ -14,7 +14,7 @@ export default function RunnableJava({code, compiler = 'openjdk-jdk-22+36'}) {
       const res = await fetch(WANDBOX_URL, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({compiler, code: source}),
+        body: JSON.stringify({compiler, code: source.replace(/\bpublic\s+(class\b)/g, '$1')}),
       });
       if (!res.ok) {
         setOutput(`Error: HTTP ${res.status}${res.status === 429 ? ' (rate limited — wait a moment and retry)' : ''}`);
