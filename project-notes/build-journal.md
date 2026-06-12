@@ -12,3 +12,4 @@ Loop memory: one entry per completed task. On resume, read this first.
 - Task 6 DONE (flashcardState nav helpers, 3/3 tests pass). next: Task 7
 - Task 7 DONE (Flashcard UI + RTL smoke test, full suite green). next: Task 8
 - Task 8 DONE (Quiz UI + RTL smoke test, full suite green). next: Task 9
+- Task 9 DONE (InterviewQA UI + RTL smoke test, full suite green). next: Task 10
