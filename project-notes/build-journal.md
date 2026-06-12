@@ -20,3 +20,4 @@ Loop memory: one entry per completed task. On resume, read this first.
 - Task 13 DONE (progress dashboard; FULL build clean, 0 broken links; removed scaffold markdown-page). next: Task 14
 - Task 14 DONE (GitHub Actions deploy workflow; npm ci + build verified clean locally; not pushed). next: Task 15
 - Task 15 DONE (README with dev/deploy instructions). next: Task 16 (push + PR, needs user confirmation)
+- Task 16 DONE (pushed build/java-prep-site, opened PR #1). REMAINING USER STEPS: merge PR, enable Pages (Settings>Pages>Source>GitHub Actions), verify live deploy.
