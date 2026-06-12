@@ -15,3 +15,4 @@ Loop memory: one entry per completed task. On resume, read this first.
 - Task 9 DONE (InterviewQA UI + RTL smoke test, full suite green). next: Task 10
 
 - Task 10 DONE (RunnableJava + mocked-fetch smoke test, full suite green). next: Task 11
+- Task 11 DONE (landing page, sidebar order, CSS; build deferred to Task 12 once docs exist). next: Task 12
