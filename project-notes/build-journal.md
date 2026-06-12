@@ -19,3 +19,4 @@ Loop memory: one entry per completed task. On resume, read this first.
 - Task 12 DONE (all 10 docs authored; build compiles all MDX, only /progress link pending Task 13). next: Task 13
 - Task 13 DONE (progress dashboard; FULL build clean, 0 broken links; removed scaffold markdown-page). next: Task 14
 - Task 14 DONE (GitHub Actions deploy workflow; npm ci + build verified clean locally; not pushed). next: Task 15
+- Task 15 DONE (README with dev/deploy instructions). next: Task 16 (push + PR, needs user confirmation)
