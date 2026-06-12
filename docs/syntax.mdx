@@ -1,0 +1,55 @@
+---
+sidebar_position: 2
+---
+
+import RunnableJava from '@site/src/components/RunnableJava';
+import Flashcard from '@site/src/components/Flashcard';
+import Quiz from '@site/src/components/Quiz';
+
+# Java Basics & Syntax
+
+Every Java program lives in a class. Code is compiled (`javac`) into bytecode
+(`.class`), which the JVM runs — this "write once, run anywhere" step is a
+favorite interview opener.
+
+## A minimal program
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+```
+
+Try editing and running it:
+
+<RunnableJava code={`public class Main {
+  public static void main(String[] args) {
+    System.out.println("Hello, World!");
+  }
+}`} />
+
+## Variables, operators, control flow
+
+```java
+int count = 3;                 // declaration + assignment
+boolean even = count % 2 == 0; // operators
+if (even) { System.out.println("even"); }
+for (int i = 0; i < count; i++) { System.out.println(i); }
+```
+
+## Flashcards
+
+<Flashcard cards={[
+  {id: 'syntax-c1', front: 'What does javac produce?', back: 'Bytecode (.class files) that the JVM executes.'},
+  {id: 'syntax-c2', front: 'What is the entry-point method signature?', back: 'public static void main(String[] args)'},
+  {id: 'syntax-c3', front: 'What does "write once, run anywhere" mean?', back: 'Bytecode runs on any platform that has a JVM.'},
+]} />
+
+## Quiz
+
+<Quiz id="syntax-quiz" questions={[
+  {id: 'syntax-q1', prompt: 'What runs Java bytecode?', options: ['The CPU directly', 'The JVM', 'The compiler'], correctIndex: 1, explanation: 'The JVM interprets/JIT-compiles bytecode at runtime.'},
+  {id: 'syntax-q2', prompt: 'Which is the correct main signature?', options: ['void main()', 'public static void main(String[] args)', 'static main(String args)'], correctIndex: 1, explanation: 'It must be public, static, void, and take a String array.'},
+]} />

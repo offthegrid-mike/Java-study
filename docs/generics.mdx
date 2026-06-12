@@ -1,0 +1,111 @@
+---
+sidebar_position: 6
+---
+
+import RunnableJava from '@site/src/components/RunnableJava';
+import Flashcard from '@site/src/components/Flashcard';
+import Quiz from '@site/src/components/Quiz';
+
+# Generics (Templates)
+
+Java's equivalent of C++ templates is **generics**. They let you write classes
+and methods that work over a type parameter while keeping full compile-time type
+safety — no casts, no `ClassCastException` surprises.
+
+## Generic classes
+
+A generic class declares one or more type parameters in angle brackets. For
+example a `Box<T>` holds a value of some type `T`:
+
+```java
+public class Box<T> {
+    private T value;
+    public void set(T value) { this.value = value; }
+    public T get() { return value; }
+}
+```
+
+Usage like `Box<String>` or `Box<Integer>` fixes `T` to a concrete type.
+
+## Generic methods
+
+A method can declare its own type parameter independent of the class. The
+compiler infers it from the arguments:
+
+```java
+public static <T> T firstOf(java.util.List<T> list) {
+    return list.get(0);
+}
+```
+
+## Bounded type parameters
+
+You can constrain a type parameter with `extends`. For instance
+`<T extends Comparable<T>>` means "any `T` that is comparable to itself", letting
+you call `compareTo` inside the method.
+
+## Wildcards: `? extends` and `? super`
+
+- `? extends Number` — an unknown type that **is a** `Number` (read-only-ish:
+  you can read `Number`s out, but cannot safely add). Use it when you **produce**
+  values from the structure.
+- `? super Integer` — an unknown supertype of `Integer`. Use it when you
+  **consume** values into the structure (you can add `Integer`s in).
+
+A handy mnemonic is **PECS**: Producer `extends`, Consumer `super`. So
+`List<? extends Number>` is a producer and `List<? super Integer>` is a consumer.
+
+## Type erasure
+
+Generics are a **compile-time** feature. The compiler checks types, then
+**erases** them — at runtime `List<String>` and `List<Integer>` are both just
+`List`. That is why you cannot write `new T()` or check `instanceof List<String>`.
+
+Run a generic `Box<T>` plus a bounded generic method:
+
+<RunnableJava code={`import java.util.Arrays;
+import java.util.List;
+
+public class Main {
+  // Generic class
+  static class Box<T> {
+    private T value;
+    void set(T value) { this.value = value; }
+    T get() { return value; }
+  }
+
+  // Bounded generic method: any T comparable to itself
+  static <T extends Comparable<T>> T max(List<T> items) {
+    T best = items.get(0);
+    for (T item : items) {
+      if (item.compareTo(best) > 0) best = item;
+    }
+    return best;
+  }
+
+  public static void main(String[] args) {
+    Box<String> box = new Box<>();
+    box.set("hello");
+    System.out.println("Box holds: " + box.get());
+
+    List<Integer> nums = Arrays.asList(3, 9, 1, 7);
+    System.out.println("Max: " + max(nums));
+  }
+}`} />
+
+## Flashcards
+
+<Flashcard cards={[
+  {id: 'generics-c1', front: 'Java equivalent of C++ templates?', back: 'Generics — type parameters checked at compile time.'},
+  {id: 'generics-c2', front: 'What does the PECS rule say?', back: 'Producer extends, Consumer super: use ? extends to read out, ? super to write in.'},
+  {id: 'generics-c3', front: 'What is type erasure?', back: 'Generic type info is removed after compilation; at runtime List<String> is just List.'},
+  {id: 'generics-c4', front: 'What does <T extends Comparable<T>> mean?', back: 'A bounded type parameter: T must be comparable to itself, so compareTo is available.'},
+]} />
+
+## Quiz
+
+<Quiz id="generics-quiz" questions={[
+  {id: 'generics-q1', prompt: 'Generics in Java are primarily a:', options: ['Runtime feature', 'Compile-time feature (erased at runtime)', 'Bytecode-only feature'], correctIndex: 1, explanation: 'The compiler checks generics then erases them; the JVM sees raw types.'},
+  {id: 'generics-q2', prompt: 'Per PECS, a producer you read from uses:', options: ['? super', '? extends', 'no wildcard'], correctIndex: 1, explanation: 'Producer Extends, Consumer Super — read with ? extends.'},
+  {id: 'generics-q3', prompt: 'Why can you NOT write new T() in a generic class?', options: ['T is final', 'Type info is erased at runtime', 'T is always Object'], correctIndex: 1, explanation: 'Erasure means the actual T is unknown at runtime, so it cannot be instantiated.'},
+]} />

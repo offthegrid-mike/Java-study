@@ -1,0 +1,97 @@
+---
+sidebar_position: 8
+---
+
+import RunnableJava from '@site/src/components/RunnableJava';
+import Flashcard from '@site/src/components/Flashcard';
+import Quiz from '@site/src/components/Quiz';
+
+# Exceptions
+
+Exceptions signal that something went wrong. They are objects that extend
+`Throwable`, and they let error-handling code stay separate from normal logic.
+
+## Checked vs unchecked
+
+- **Checked exceptions** extend `Exception` (but not `RuntimeException`). The
+  compiler forces you to either `catch` them or declare them with `throws`.
+  Examples: `IOException`, `SQLException`.
+- **Unchecked exceptions** extend `RuntimeException` (e.g.
+  `NullPointerException`, `ArithmeticException`, `IllegalArgumentException`).
+  They usually indicate programming bugs and need not be declared.
+- `Error` (e.g. `OutOfMemoryError`) signals serious problems you normally do not
+  catch.
+
+## try / catch / finally
+
+`try` wraps risky code, `catch` handles a matching exception, and `finally` runs
+**no matter what** — used to release resources. `finally` runs even if the `try`
+returns or throws.
+
+## try-with-resources
+
+Any object implementing `AutoCloseable` can be declared in a
+`try (...)` header and is closed automatically when the block exits, even on an
+exception — cleaner and safer than a manual `finally`.
+
+```java
+try (var reader = new java.io.BufferedReader(new java.io.FileReader("data.txt"))) {
+    System.out.println(reader.readLine());
+} catch (java.io.IOException e) {
+    System.out.println("read failed: " + e.getMessage());
+}
+// reader is closed automatically
+```
+
+## Custom exceptions
+
+Extend `Exception` (checked) or `RuntimeException` (unchecked) to model
+domain-specific failures:
+
+```java
+class InsufficientFundsException extends RuntimeException {
+    InsufficientFundsException(String msg) { super(msg); }
+}
+```
+
+## final vs finally vs finalize
+
+- **`final`** — a keyword: a `final` variable is a constant, a `final` method
+  cannot be overridden, a `final` class cannot be extended.
+- **`finally`** — a block after `try`/`catch` that always executes.
+- **`finalize()`** — a deprecated `Object` method the GC *might* call before
+  reclaiming an object. Do not rely on it.
+
+Run a try/catch/finally that divides by zero:
+
+<RunnableJava code={`public class Main {
+  public static void main(String[] args) {
+    try {
+      System.out.println("before");
+      int x = 10 / 0;            // throws ArithmeticException
+      System.out.println("after (never reached): " + x);
+    } catch (ArithmeticException e) {
+      System.out.println("caught: " + e.getMessage());
+    } finally {
+      System.out.println("finally always runs");
+    }
+    System.out.println("program continues");
+  }
+}`} />
+
+## Flashcards
+
+<Flashcard cards={[
+  {id: 'exceptions-c1', front: 'Checked vs unchecked exceptions?', back: 'Checked (extend Exception) must be caught or declared; unchecked (extend RuntimeException) need not be.'},
+  {id: 'exceptions-c2', front: 'When does a finally block run?', back: 'Always — after try/catch, even on return or exception.'},
+  {id: 'exceptions-c3', front: 'What does try-with-resources do?', back: 'Auto-closes any AutoCloseable declared in the try header when the block exits.'},
+  {id: 'exceptions-c4', front: 'final vs finally vs finalize?', back: 'final = constant/non-overridable/non-extendable; finally = always-run block; finalize() = deprecated GC callback.'},
+]} />
+
+## Quiz
+
+<Quiz id="exceptions-quiz" questions={[
+  {id: 'exceptions-q1', prompt: 'NullPointerException is:', options: ['Checked', 'Unchecked (RuntimeException)', 'An Error'], correctIndex: 1, explanation: 'It extends RuntimeException, so it is unchecked.'},
+  {id: 'exceptions-q2', prompt: 'A finally block runs:', options: ['Only if no exception', 'Only if an exception', 'Always'], correctIndex: 2, explanation: 'finally executes regardless of how the try block exits.'},
+  {id: 'exceptions-q3', prompt: 'try-with-resources requires the resource to implement:', options: ['Serializable', 'AutoCloseable', 'Comparable'], correctIndex: 1, explanation: 'Only AutoCloseable resources can be managed by try-with-resources.'},
+]} />

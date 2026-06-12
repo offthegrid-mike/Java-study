@@ -1,0 +1,94 @@
+---
+sidebar_position: 7
+---
+
+import RunnableJava from '@site/src/components/RunnableJava';
+import Flashcard from '@site/src/components/Flashcard';
+import Quiz from '@site/src/components/Quiz';
+
+# Collections Framework
+
+The Collections Framework provides reusable data structures behind a small set of
+interfaces. The big three are `List`, `Set`, and `Map`.
+
+## Core interfaces
+
+- **`List`** — ordered, allows duplicates, index access (`ArrayList`, `LinkedList`).
+- **`Set`** — no duplicates (`HashSet`, `TreeSet`, `LinkedHashSet`).
+- **`Map`** — key/value pairs, unique keys (`HashMap`, `TreeMap`, `LinkedHashMap`).
+
+(`Map` is technically not a `Collection`, but it is part of the framework.)
+
+## `ArrayList` vs `LinkedList`
+
+- `ArrayList` is backed by a resizable array: O(1) random access by index, but
+  inserting/removing in the middle is O(n) due to shifting.
+- `LinkedList` is a doubly linked list: O(1) insert/remove at the ends (and at a
+  known node), but O(n) random access. In practice `ArrayList` wins for most
+  workloads.
+
+## `HashMap` vs `TreeMap`
+
+- `HashMap` — average O(1) `get`/`put`, **no ordering**, allows one `null` key.
+  Relies on `hashCode`/`equals`.
+- `TreeMap` — a red-black tree, keeps keys **sorted**, with O(log n) operations.
+
+## `HashSet`
+
+A `HashSet` is backed by a `HashMap`: average O(1) `add`/`contains`/`remove`, no
+ordering, no duplicates. Use `TreeSet` when you need sorted iteration.
+
+## Rough Big-O cheat sheet
+
+| Operation | `ArrayList` | `LinkedList` | `HashMap` | `TreeMap` |
+| --- | --- | --- | --- | --- |
+| get by index/key | O(1) | O(n) | O(1) avg | O(log n) |
+| add at end / put | O(1) amortized | O(1) | O(1) avg | O(log n) |
+| remove (middle/key) | O(n) | O(1) at known node | O(1) avg | O(log n) |
+
+**When to pick:** use `ArrayList` by default; `LinkedList` only for heavy
+end-queue use; `HashMap`/`HashSet` for fast lookups without ordering;
+`TreeMap`/`TreeSet` when you need sorted order.
+
+Run a `List` and a `Map` example:
+
+<RunnableJava code={`import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class Main {
+  public static void main(String[] args) {
+    List<String> names = new ArrayList<>();
+    names.add("Ada");
+    names.add("Linus");
+    names.add("Grace");
+    for (String n : names) {
+      System.out.println("name: " + n);
+    }
+
+    Map<String, Integer> ages = new HashMap<>();
+    ages.put("Ada", 36);
+    ages.put("Grace", 85);
+    for (Map.Entry<String, Integer> e : ages.entrySet()) {
+      System.out.println(e.getKey() + " -> " + e.getValue());
+    }
+  }
+}`} />
+
+## Flashcards
+
+<Flashcard cards={[
+  {id: 'collections-c1', front: 'ArrayList vs LinkedList random access?', back: 'ArrayList is O(1) by index; LinkedList is O(n).'},
+  {id: 'collections-c2', front: 'HashMap vs TreeMap ordering?', back: 'HashMap has no ordering (O(1) avg); TreeMap keeps keys sorted (O(log n)).'},
+  {id: 'collections-c3', front: 'What backs a HashSet?', back: 'A HashMap — giving average O(1) add/contains and no duplicates.'},
+  {id: 'collections-c4', front: 'Which interface stores key/value pairs?', back: 'Map (e.g. HashMap, TreeMap). Keys are unique.'},
+]} />
+
+## Quiz
+
+<Quiz id="collections-quiz" questions={[
+  {id: 'collections-q1', prompt: 'Average get(key) on a HashMap is:', options: ['O(1)', 'O(log n)', 'O(n)'], correctIndex: 0, explanation: 'HashMap offers average O(1) lookups via hashing.'},
+  {id: 'collections-q2', prompt: 'Which keeps its keys sorted?', options: ['HashMap', 'TreeMap', 'HashSet'], correctIndex: 1, explanation: 'TreeMap (a red-black tree) keeps keys in sorted order.'},
+  {id: 'collections-q3', prompt: 'Best default for index access?', options: ['LinkedList', 'ArrayList', 'HashSet'], correctIndex: 1, explanation: 'ArrayList gives O(1) random access and is the usual default List.'},
+]} />

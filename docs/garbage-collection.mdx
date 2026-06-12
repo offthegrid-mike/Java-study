@@ -1,0 +1,93 @@
+---
+sidebar_position: 9
+---
+
+import RunnableJava from '@site/src/components/RunnableJava';
+import Flashcard from '@site/src/components/Flashcard';
+import Quiz from '@site/src/components/Quiz';
+
+# Memory & Garbage Collection
+
+Java manages memory for you. The garbage collector (GC) automatically reclaims
+objects that are no longer reachable, so you rarely free memory by hand.
+
+## Stack vs heap
+
+- **Stack** — per-thread; holds method frames, local variables, and references.
+  Fast, LIFO, automatically reclaimed when a method returns.
+- **Heap** — shared across threads; holds all objects (and their instance
+  fields). This is where the GC operates.
+
+## Reachability and GC roots
+
+An object is **eligible for collection** when it is no longer reachable from any
+**GC root** — roots include local variables on the stack, active threads, static
+fields, and JNI references. If nothing can reach an object, it can be collected.
+
+## Generational GC
+
+Most objects die young, so the heap is split into generations:
+
+- **Young generation** (Eden + two survivor spaces) — new objects. A
+  **minor GC** collects the young gen frequently and cheaply.
+- **Old (tenured) generation** — objects that survived several minor GCs get
+  promoted here. A **major GC** (or full GC) collects the old gen and is more
+  expensive.
+
+## Common collectors (one-liners)
+
+- **Serial** — single-threaded; good for small heaps / single-CPU.
+- **Parallel** — multi-threaded throughput collector.
+- **G1** — the modern default; divides the heap into regions and aims for
+  predictable pause times.
+
+## Reference strength
+
+- **Strong** — the normal reference; never collected while reachable.
+- **Soft** (`SoftReference`) — collected only when memory is low; good for caches.
+- **Weak** (`WeakReference`) — collected at the next GC if only weakly reachable;
+  used by `WeakHashMap`.
+- **Phantom** (`PhantomReference`) — enqueued after finalization; used for
+  precise post-mortem cleanup.
+
+> Note: `System.gc()` is only a **hint** to the JVM. The JVM may ignore it and
+> decide when (or whether) to actually run a collection.
+
+Run a small program that drops a reference and hints at GC:
+
+<RunnableJava code={`public class Main {
+  static class Resource {
+    final String name;
+    Resource(String name) { this.name = name; }
+  }
+
+  public static void main(String[] args) {
+    Resource r = new Resource("temp");
+    System.out.println("created: " + r.name);
+
+    r = null;            // the object is now unreachable -> eligible for GC
+    System.gc();         // only a HINT; the JVM may or may not collect now
+
+    Resource keep = new Resource("kept");
+    System.out.println("still reachable: " + keep.name);
+  }
+}`} />
+
+## Flashcards
+
+<Flashcard cards={[
+  {id: 'gc-c1', front: 'Where do Java objects live?', back: 'On the heap (shared). The stack holds frames, locals, and references.'},
+  {id: 'gc-c2', front: 'When is an object eligible for GC?', back: 'When it is no longer reachable from any GC root.'},
+  {id: 'gc-c3', front: 'Minor vs major GC?', back: 'Minor GC collects the young generation (cheap, frequent); major/full GC collects the old generation (expensive).'},
+  {id: 'gc-c4', front: 'Soft vs weak reference?', back: 'Soft is cleared only under memory pressure (good for caches); weak is cleared at the next GC if only weakly reachable.'},
+  {id: 'gc-c5', front: 'What does System.gc() do?', back: 'It is only a hint; the JVM may ignore it and choose when to collect.'},
+]} />
+
+## Quiz
+
+<Quiz id="gc-quiz" questions={[
+  {id: 'gc-q1', prompt: 'Objects are allocated on the:', options: ['Stack', 'Heap', 'Registers'], correctIndex: 1, explanation: 'Objects live on the heap; the stack holds frames and references.'},
+  {id: 'gc-q2', prompt: 'An object becomes collectible when:', options: ['It is set to a new value', 'It is unreachable from any GC root', 'finalize() is declared'], correctIndex: 1, explanation: 'Reachability from GC roots determines eligibility for collection.'},
+  {id: 'gc-q3', prompt: 'System.gc() is:', options: ['A guaranteed collection', 'Only a hint to the JVM', 'Illegal to call'], correctIndex: 1, explanation: 'It merely suggests a collection; the JVM decides what to do.'},
+  {id: 'gc-q4', prompt: 'Which is the modern default collector?', options: ['Serial', 'G1', 'Reference counting'], correctIndex: 1, explanation: 'G1 (Garbage-First) is the default in modern JVMs, targeting predictable pauses.'},
+]} />

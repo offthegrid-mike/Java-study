@@ -1,0 +1,102 @@
+---
+sidebar_position: 4
+---
+
+import RunnableJava from '@site/src/components/RunnableJava';
+import Flashcard from '@site/src/components/Flashcard';
+import Quiz from '@site/src/components/Quiz';
+
+# Classes & Objects
+
+A **class** is a blueprint; an **object** is a concrete instance created from it
+with `new`. A class bundles state (fields) and behavior (methods) together.
+
+## Class anatomy
+
+```java
+public class Account {
+    private double balance;          // field (state)
+
+    public Account(double opening) { // constructor
+        this.balance = opening;      // 'this' disambiguates field vs parameter
+    }
+
+    public void deposit(double amt) { // instance method (behavior)
+        this.balance += amt;
+    }
+
+    public double getBalance() {
+        return balance;
+    }
+}
+```
+
+## Creating objects with `new`
+
+`new Account(100)` allocates the object on the heap, runs the constructor, and
+returns a reference. The constructor initializes the object's state.
+
+## `this`
+
+`this` is a reference to the current object. It is most often used to
+distinguish a field from a parameter of the same name, or to call another
+constructor in the same class.
+
+## `static` vs instance members
+
+- **Instance members** belong to each object — every object has its own copy.
+- **`static` members** belong to the class itself; they are shared across all
+  instances and accessed via the class name (e.g. `Math.PI`).
+
+## Access modifiers
+
+| Modifier | Visible to |
+| --- | --- |
+| `public` | everyone |
+| `protected` | same package + subclasses |
+| (default / package-private) | same package only |
+| `private` | the declaring class only |
+
+Run a small class with a constructor and a method:
+
+<RunnableJava code={`public class Main {
+  // A nested helper class with a constructor and a method
+  static class Account {
+    private double balance;          // private field
+
+    Account(double opening) {        // constructor
+      this.balance = opening;        // 'this' refers to the new object
+    }
+
+    void deposit(double amt) {       // instance method
+      this.balance += amt;
+    }
+
+    double getBalance() {
+      return balance;
+    }
+  }
+
+  public static void main(String[] args) {
+    Account a = new Account(100.0);  // object creation with new
+    a.deposit(50.0);
+    System.out.println("Balance: " + a.getBalance());
+  }
+}`} />
+
+## Flashcards
+
+<Flashcard cards={[
+  {id: 'classes-c1', front: 'What keyword creates an object?', back: 'new — it allocates the object and runs its constructor.'},
+  {id: 'classes-c2', front: 'What does the "this" keyword reference?', back: 'The current object instance; often used to distinguish a field from a parameter.'},
+  {id: 'classes-c3', front: 'static member vs instance member?', back: 'static belongs to the class and is shared; instance members belong to each object.'},
+  {id: 'classes-c4', front: 'What is private visibility?', back: 'Accessible only within the declaring class.'},
+]} />
+
+## Quiz
+
+<Quiz id="classes-quiz" questions={[
+  {id: 'classes-q1', prompt: 'A static field is:', options: ['Unique per object', 'Shared across all instances', 'Always private'], correctIndex: 1, explanation: 'static members belong to the class itself, shared by every instance.'},
+  {id: 'classes-q2', prompt: 'Which modifier is most restrictive?', options: ['public', 'protected', 'private'], correctIndex: 2, explanation: 'private limits access to the declaring class only.'},
+  {id: 'classes-q3', prompt: 'What runs when you call new?', options: ['The finalizer', 'The constructor', 'The main method'], correctIndex: 1, explanation: 'new allocates the object and invokes its constructor.'},
+]} />
