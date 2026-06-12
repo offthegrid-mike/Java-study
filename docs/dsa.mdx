@@ -1,0 +1,692 @@
+---
+sidebar_position: 8
+---
+
+import RunnableJava from '@site/src/components/RunnableJava';
+import Flashcard from '@site/src/components/Flashcard';
+import Quiz from '@site/src/components/Quiz';
+
+# Data Structures & Algorithms
+
+Every data structure that appears regularly in coding interviews — with key methods, time complexities, and runnable examples. See [Collections Framework](./collections) for a conceptual overview of the Java Collections API.
+
+## Big-O at a glance
+
+| Complexity | Name | Typical operations |
+|---|---|---|
+| O(1) | Constant | Array index, HashMap get/put, stack push/pop, heap peek |
+| O(log n) | Logarithmic | Binary search, TreeMap/TreeSet ops, heap offer/poll |
+| O(n) | Linear | Linear scan, ArrayList insert/remove middle, HashSet copy |
+| O(n log n) | Linearithmic | Arrays.sort, Collections.sort (TimSort) |
+| O(n²) | Quadratic | Nested loops, bubble/insertion sort (worst case) |
+| O(2ⁿ) | Exponential | Recursive subsets, brute-force combinations |
+
+---
+
+## Array
+
+A fixed-size block of contiguous memory. The `Arrays` utility class provides sorting, searching, and copying helpers. `int[]` is more cache-friendly than `List<Integer>` — prefer it for numeric problems.
+
+| Method | What it does | Complexity |
+|---|---|---|
+| `arr[i]` | Access by index | O(1) |
+| `arr.length` | Size | O(1) |
+| `Arrays.sort(arr)` | Sort (dual-pivot quicksort / TimSort) | O(n log n) |
+| `Arrays.sort(arr, from, to)` | Sort a subrange | O(k log k) |
+| `Arrays.binarySearch(arr, key)` | Search sorted array | O(log n) |
+| `Arrays.fill(arr, val)` | Fill all elements | O(n) |
+| `Arrays.copyOf(arr, len)` | Copy with new length | O(n) |
+| `Arrays.copyOfRange(arr, from, to)` | Copy subrange | O(n) |
+| `Arrays.equals(a, b)` | Element-wise equality | O(n) |
+| `Arrays.toString(arr)` | Printable string | O(n) |
+
+<RunnableJava code={`import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] arr = {5, 2, 8, 1, 9, 3};
+
+        Arrays.sort(arr);
+        System.out.println("Sorted: " + Arrays.toString(arr));   // [1, 2, 3, 5, 8, 9]
+
+        int idx = Arrays.binarySearch(arr, 8);
+        System.out.println("Index of 8: " + idx);                 // 4
+
+        int[] sub = Arrays.copyOfRange(arr, 1, 4);
+        System.out.println("Subarray [1,4): " + Arrays.toString(sub)); // [2, 3, 5]
+
+        int[] filled = new int[5];
+        Arrays.fill(filled, 7);
+        System.out.println("Filled: " + Arrays.toString(filled)); // [7, 7, 7, 7, 7]
+
+        // 2D array
+        int[][] matrix = new int[3][3];
+        for (int r = 0; r < 3; r++)
+            for (int c = 0; c < 3; c++)
+                matrix[r][c] = r * 3 + c;
+        System.out.println("matrix[1][2] = " + matrix[1][2]);    // 5
+    }
+}`} />
+
+---
+
+## ArrayList (Dynamic Array)
+
+Backed by a resizable array. The default `List` choice. `Collections` helpers cover sorting, searching, shuffling, and frequency counting.
+
+| Method | What it does | Complexity |
+|---|---|---|
+| `add(e)` | Append | O(1) amortized |
+| `add(i, e)` | Insert at index | O(n) |
+| `get(i)` | Access by index | O(1) |
+| `set(i, e)` | Replace at index | O(1) |
+| `remove(i)` | Remove by index | O(n) |
+| `remove(Object o)` | Remove first occurrence of value | O(n) |
+| `contains(o)` | Linear search | O(n) |
+| `indexOf(o)` / `lastIndexOf(o)` | First / last index | O(n) |
+| `size()` | Count | O(1) |
+| `subList(from, to)` | View of subrange | O(1) |
+| `Collections.sort(list)` | Sort | O(n log n) |
+| `Collections.reverse(list)` | Reverse in-place | O(n) |
+| `Collections.binarySearch(list, key)` | Search sorted list | O(log n) |
+| `Collections.frequency(list, o)` | Count occurrences | O(n) |
+| `Collections.nCopies(n, o)` | List of n identical values | O(n) |
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> list = new ArrayList<>(Arrays.asList(5, 2, 8, 1, 9));
+
+        list.add(3);               // append
+        list.add(0, 0);            // insert at front
+        System.out.println("After inserts: " + list);
+
+        list.remove(Integer.valueOf(9)); // remove by value (not index!)
+        System.out.println("After remove(9): " + list);
+
+        Collections.sort(list);
+        System.out.println("Sorted: " + list);
+
+        int pos = Collections.binarySearch(list, 5);
+        System.out.println("Binary search for 5: index " + pos);
+
+        Collections.reverse(list);
+        System.out.println("Reversed: " + list);
+
+        System.out.println("Contains 8: " + list.contains(8));
+        System.out.println("Index of 5: " + list.indexOf(5));
+        System.out.println("Sublist [1,3): " + list.subList(1, 3));
+    }
+}`} />
+
+---
+
+## LinkedList (Doubly-Linked List)
+
+Implements both `List` and `Deque`. O(1) at both ends; O(n) by index. In practice, `ArrayList` beats it for most workloads and `ArrayDeque` beats it for pure queue/deque use — but `LinkedList` is useful when you need both a list interface and efficient head/tail access together.
+
+| Method | Role | Complexity |
+|---|---|---|
+| `addFirst(e)` / `offerFirst(e)` | Prepend | O(1) |
+| `addLast(e)` / `offerLast(e)` | Append | O(1) |
+| `getFirst()` / `peekFirst()` | Peek head (throws vs null) | O(1) |
+| `getLast()` / `peekLast()` | Peek tail (throws vs null) | O(1) |
+| `removeFirst()` / `pollFirst()` | Remove head (throws vs null) | O(1) |
+| `removeLast()` / `pollLast()` | Remove tail (throws vs null) | O(1) |
+| `get(i)` / `set(i, e)` | Index access / update | O(n) |
+| `add(i, e)` / `remove(i)` | Index insert / delete | O(n) |
+
+---
+
+## Stack
+
+Java's legacy `Stack` class is a synchronized `Vector` — **avoid it**. Use `ArrayDeque` instead: same LIFO semantics, much faster.
+
+| Method | What it does | Complexity |
+|---|---|---|
+| `push(e)` | Push onto top | O(1) |
+| `pop()` | Remove and return top (throws if empty) | O(1) |
+| `peek()` | View top without removing (throws if empty) | O(1) |
+| `isEmpty()` | Check empty | O(1) |
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // LIFO: always declare as Deque, implement with ArrayDeque
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        System.out.println("Top: " + stack.peek());       // 3
+        System.out.print("Pop order: ");
+        while (!stack.isEmpty()) System.out.print(stack.pop() + " "); // 3 2 1
+        System.out.println();
+
+        // Classic interview use: balanced brackets
+        String expr = "({[()]})";
+        Deque<Character> s = new ArrayDeque<>();
+        boolean valid = true;
+        for (char c : expr.toCharArray()) {
+            if ("({[".indexOf(c) >= 0) {
+                s.push(c);
+            } else {
+                if (s.isEmpty()) { valid = false; break; }
+                char top = s.pop();
+                if ((c == ')' && top != '(') ||
+                    (c == '}' && top != '{') ||
+                    (c == ']' && top != '[')) {
+                    valid = false; break;
+                }
+            }
+        }
+        System.out.println("\"" + expr + "\" balanced: " + (valid && s.isEmpty()));
+    }
+}`} />
+
+---
+
+## Queue & Deque
+
+`ArrayDeque` is the preferred implementation for both queues and double-ended queues — no synchronization overhead, faster than `LinkedList`.
+
+**Rule of thumb:** use `offer`/`poll`/`peek` (return null) instead of `add`/`remove`/`element` (throw exceptions) so you don't need try-catch.
+
+| Method | Throws if empty/full | Returns null/false | What it does |
+|---|---|---|---|
+| `offer(e)` | — | — | Enqueue at tail |
+| `poll()` | — | ✓ | Dequeue from head |
+| `peek()` | — | ✓ | View head |
+| `offerFirst(e)` | — | — | Push to front |
+| `offerLast(e)` | — | — | Push to back |
+| `pollFirst()` | — | ✓ | Remove from front |
+| `pollLast()` | — | ✓ | Remove from back |
+| `peekFirst()` | — | ✓ | View front |
+| `peekLast()` | — | ✓ | View back |
+
+All operations above are **O(1)**.
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Queue: FIFO
+        Queue<String> queue = new ArrayDeque<>();
+        queue.offer("first");
+        queue.offer("second");
+        queue.offer("third");
+        System.out.println("Front: " + queue.peek());
+        System.out.print("Dequeue order: ");
+        while (!queue.isEmpty()) System.out.print(queue.poll() + " ");
+        System.out.println();
+
+        // Deque: both ends
+        Deque<Integer> deque = new ArrayDeque<>();
+        deque.offerLast(2);
+        deque.offerFirst(1);   // prepend
+        deque.offerLast(3);    // append
+        System.out.println("Deque: " + deque);          // [1, 2, 3]
+        System.out.println("pollFirst: " + deque.pollFirst()); // 1
+        System.out.println("pollLast:  " + deque.pollLast());  // 3
+        System.out.println("Remaining: " + deque);     // [2]
+
+        // Sliding window maximum (deque stores indices, decreasing values)
+        int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
+        int k = 3;
+        Deque<Integer> window = new ArrayDeque<>();
+        System.out.print("Window max (k=" + k + "): ");
+        for (int i = 0; i < nums.length; i++) {
+            while (!window.isEmpty() && window.peekFirst() < i - k + 1)
+                window.pollFirst();
+            while (!window.isEmpty() && nums[window.peekLast()] < nums[i])
+                window.pollLast();
+            window.offerLast(i);
+            if (i >= k - 1) System.out.print(nums[window.peekFirst()] + " ");
+        }
+        System.out.println();
+    }
+}`} />
+
+---
+
+## HashMap
+
+The standard hash table. O(1) average for all operations. Keys must implement `hashCode()` and `equals()`. Allows one `null` key. Iteration order is undefined.
+
+| Method | What it does | Complexity |
+|---|---|---|
+| `put(k, v)` | Insert or update | O(1) avg |
+| `get(k)` | Lookup (null if absent) | O(1) avg |
+| `getOrDefault(k, def)` | Lookup with fallback | O(1) avg |
+| `containsKey(k)` | Key existence | O(1) avg |
+| `containsValue(v)` | Value existence | O(n) |
+| `remove(k)` | Delete by key | O(1) avg |
+| `putIfAbsent(k, v)` | Insert only if key absent | O(1) avg |
+| `computeIfAbsent(k, fn)` | Compute & insert if absent | O(1) avg |
+| `merge(k, v, fn)` | Combine new value with existing | O(1) avg |
+| `keySet()` / `values()` / `entrySet()` | Views | O(1) |
+| `size()` / `isEmpty()` | Count / check | O(1) |
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Frequency count — most common interview pattern
+        String[] words = {"apple", "banana", "apple", "cherry", "banana", "apple"};
+        Map<String, Integer> freq = new HashMap<>();
+        for (String w : words) {
+            freq.merge(w, 1, Integer::sum);
+            // same as: freq.put(w, freq.getOrDefault(w, 0) + 1);
+        }
+        System.out.println("Frequencies: " + freq);
+
+        // Group elements — computeIfAbsent avoids null checks
+        Map<Character, List<String>> groups = new HashMap<>();
+        for (String w : words) {
+            groups.computeIfAbsent(w.charAt(0), k -> new ArrayList<>()).add(w);
+        }
+        System.out.println("Grouped by first letter: " + groups);
+
+        // entrySet iteration (most efficient way to read all pairs)
+        for (Map.Entry<String, Integer> entry : freq.entrySet()) {
+            System.out.println("  " + entry.getKey() + " -> " + entry.getValue());
+        }
+
+        // putIfAbsent vs computeIfAbsent
+        freq.putIfAbsent("durian", 0);
+        System.out.println("After putIfAbsent durian: " + freq.get("durian")); // 0
+    }
+}`} />
+
+---
+
+## TreeMap (Sorted Map)
+
+A red-black tree map — keys stay sorted at all times. All ops are O(log n). The **navigation methods** (`floorKey`, `ceilingKey`, `lowerKey`, `higherKey`) are invaluable in interval, sweep-line, and range problems.
+
+| Method | What it does | Complexity |
+|---|---|---|
+| `put(k, v)` / `get(k)` / `remove(k)` | Standard map ops | O(log n) |
+| `firstKey()` / `lastKey()` | Min / max key | O(log n) |
+| `firstEntry()` / `lastEntry()` | Min / max key-value pair | O(log n) |
+| `floorKey(k)` | Largest key ≤ k (null if none) | O(log n) |
+| `ceilingKey(k)` | Smallest key ≥ k (null if none) | O(log n) |
+| `lowerKey(k)` | Largest key strictly < k | O(log n) |
+| `higherKey(k)` | Smallest key strictly > k | O(log n) |
+| `headMap(toKey)` | Submap with keys < toKey | O(log n) |
+| `tailMap(fromKey)` | Submap with keys ≥ fromKey | O(log n) |
+| `subMap(from, to)` | Submap for keys in \[from, to) | O(log n) |
+| `pollFirstEntry()` / `pollLastEntry()` | Remove and return min / max | O(log n) |
+| `descendingMap()` | Reverse-order view | O(1) |
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        TreeMap<Integer, String> tm = new TreeMap<>();
+        tm.put(10, "ten");
+        tm.put(20, "twenty");
+        tm.put(30, "thirty");
+        tm.put(40, "forty");
+        tm.put(50, "fifty");
+
+        System.out.println("All entries: " + tm);
+        System.out.println("firstKey: " + tm.firstKey());           // 10
+        System.out.println("lastKey:  " + tm.lastKey());            // 50
+        System.out.println("floorKey(25):   " + tm.floorKey(25));   // 20
+        System.out.println("ceilingKey(25): " + tm.ceilingKey(25)); // 30
+        System.out.println("lowerKey(30):   " + tm.lowerKey(30));   // 20
+        System.out.println("higherKey(30):  " + tm.higherKey(30));  // 40
+        System.out.println("headMap(30):    " + tm.headMap(30));    // {10=ten, 20=twenty}
+        System.out.println("tailMap(30):    " + tm.tailMap(30));    // {30=..., 40=..., 50=...}
+        System.out.println("subMap(20,40):  " + tm.subMap(20, 40)); // {20=twenty, 30=thirty}
+
+        // Poll smallest entry (useful for event scheduling)
+        Map.Entry<Integer, String> min = tm.pollFirstEntry();
+        System.out.println("Polled min: " + min.getKey() + " = " + min.getValue());
+    }
+}`} />
+
+---
+
+## LinkedHashMap
+
+Identical to `HashMap` in performance (O(1) avg) but preserves **insertion order** during iteration. With `accessOrder=true`, recently accessed entries move to the end — the standard pattern for an LRU cache.
+
+| Property | Value |
+|---|---|
+| get / put / remove | O(1) avg |
+| Iteration order | Insertion order (default) or access order |
+| `null` keys | 1 allowed |
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // Insertion-order: useful when output order must match input order
+        Map<String, Integer> scores = new LinkedHashMap<>();
+        scores.put("Alice", 95);
+        scores.put("Bob", 87);
+        scores.put("Carol", 92);
+        System.out.println("Insertion order: " + scores.keySet()); // [Alice, Bob, Carol]
+
+        // LRU Cache (capacity 3, access-order eviction)
+        final int CAP = 3;
+        Map<Integer, Integer> lru = new LinkedHashMap<>(CAP, 0.75f, true) {
+            protected boolean removeEldestEntry(Map.Entry<Integer, Integer> e) {
+                return size() > CAP;
+            }
+        };
+        lru.put(1, 10);
+        lru.put(2, 20);
+        lru.put(3, 30);
+        lru.get(1);        // access key 1 — moves to most-recent end
+        lru.put(4, 40);    // evicts key 2 (least recently used)
+        System.out.println("LRU keys after eviction: " + lru.keySet()); // [3, 1, 4]
+    }
+}`} />
+
+---
+
+## HashSet
+
+Backed by a `HashMap`. O(1) average for all operations. No ordering, no duplicates. The standard tool for membership testing, deduplication, and set math.
+
+| Method | What it does | Complexity |
+|---|---|---|
+| `add(e)` | Insert (no-op if present) | O(1) avg |
+| `contains(e)` | Membership test | O(1) avg |
+| `remove(e)` | Delete | O(1) avg |
+| `size()` / `isEmpty()` | Count / check | O(1) |
+| `addAll(c)` | Union in-place | O(n) |
+| `retainAll(c)` | Intersection in-place | O(n) |
+| `removeAll(c)` | Difference in-place | O(n) |
+| `containsAll(c)` | Subset check | O(n) |
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Set<Integer> a = new HashSet<>(Arrays.asList(1, 2, 3, 4, 5));
+        Set<Integer> b = new HashSet<>(Arrays.asList(3, 4, 5, 6, 7));
+
+        Set<Integer> union = new HashSet<>(a);
+        union.addAll(b);
+        System.out.println("Union:        " + union);  // {1..7}
+
+        Set<Integer> inter = new HashSet<>(a);
+        inter.retainAll(b);
+        System.out.println("Intersection: " + inter);  // {3, 4, 5}
+
+        Set<Integer> diff = new HashSet<>(a);
+        diff.removeAll(b);
+        System.out.println("Difference:   " + diff);   // {1, 2}
+
+        // Deduplication
+        int[] arr = {1, 2, 2, 3, 3, 3, 4};
+        Set<Integer> seen = new HashSet<>();
+        List<Integer> deduped = new ArrayList<>();
+        for (int x : arr) if (seen.add(x)) deduped.add(x);
+        System.out.println("Deduplicated (order preserved): " + deduped);
+
+        // Two-sum check
+        int[] nums = {2, 7, 11, 15};
+        int target = 9;
+        Set<Integer> complements = new HashSet<>();
+        for (int n : nums) {
+            if (complements.contains(n)) {
+                System.out.println("Two-sum pair found: " + (target - n) + " + " + n);
+                break;
+            }
+            complements.add(target - n);
+        }
+    }
+}`} />
+
+---
+
+## TreeSet (Sorted Set)
+
+A `NavigableSet` backed by a red-black tree. Like `TreeMap` but for values only. All ops are O(log n). Navigation methods mirror `TreeMap` — use them in sliding-window, binary-search-on-set, and nearest-neighbor problems.
+
+| Method | What it does | Complexity |
+|---|---|---|
+| `add(e)` / `contains(e)` / `remove(e)` | Standard set ops | O(log n) |
+| `first()` / `last()` | Min / max | O(log n) |
+| `floor(e)` | Largest element ≤ e (null if none) | O(log n) |
+| `ceiling(e)` | Smallest element ≥ e (null if none) | O(log n) |
+| `lower(e)` | Largest element strictly < e | O(log n) |
+| `higher(e)` | Smallest element strictly > e | O(log n) |
+| `headSet(to)` | Subset with values < to | O(log n) |
+| `tailSet(from)` | Subset with values ≥ from | O(log n) |
+| `subSet(from, to)` | Subset for values in \[from, to) | O(log n) |
+| `pollFirst()` / `pollLast()` | Remove and return min / max | O(log n) |
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        TreeSet<Integer> ts = new TreeSet<>(Arrays.asList(10, 20, 30, 40, 50));
+
+        System.out.println("Set: " + ts);
+        System.out.println("first:         " + ts.first());          // 10
+        System.out.println("last:          " + ts.last());           // 50
+        System.out.println("floor(25):     " + ts.floor(25));        // 20
+        System.out.println("ceiling(25):   " + ts.ceiling(25));      // 30
+        System.out.println("lower(30):     " + ts.lower(30));        // 20
+        System.out.println("higher(30):    " + ts.higher(30));       // 40
+        System.out.println("headSet(30):   " + ts.headSet(30));      // [10, 20]
+        System.out.println("tailSet(30):   " + ts.tailSet(30));      // [30, 40, 50]
+        System.out.println("subSet(20,40): " + ts.subSet(20, 40));   // [20, 30]
+
+        System.out.println("pollFirst: " + ts.pollFirst());          // 10
+        System.out.println("pollLast:  " + ts.pollLast());           // 50
+        System.out.println("After polls: " + ts);                    // [20, 30, 40]
+    }
+}`} />
+
+---
+
+## PriorityQueue (Min-Heap / Max-Heap)
+
+A binary heap. Default is a **min-heap** (smallest element at the head). For a max-heap, pass `Collections.reverseOrder()` or a lambda. Used in Dijkstra's algorithm, top-K problems, merge K sorted lists, and greedy scheduling.
+
+| Method | What it does | Complexity |
+|---|---|---|
+| `offer(e)` / `add(e)` | Insert | O(log n) |
+| `poll()` | Remove and return head (min or max) | O(log n) |
+| `peek()` | View head without removing | O(1) |
+| `remove(o)` | Remove a specific element | O(n) |
+| `contains(o)` | Membership test | O(n) |
+| `size()` / `isEmpty()` | Count / check | O(1) |
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] data = {5, 1, 8, 3, 9, 2, 7};
+
+        // Min-heap (default)
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        for (int x : data) minHeap.offer(x);
+        System.out.print("Min-heap drain: ");
+        while (!minHeap.isEmpty()) System.out.print(minHeap.poll() + " "); // 1 2 3 5 7 8 9
+        System.out.println();
+
+        // Max-heap
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+        for (int x : data) maxHeap.offer(x);
+        System.out.print("Max-heap drain: ");
+        while (!maxHeap.isEmpty()) System.out.print(maxHeap.poll() + " "); // 9 8 7 5 3 2 1
+        System.out.println();
+
+        // Top-K largest using a min-heap of size k
+        int k = 3;
+        PriorityQueue<Integer> topK = new PriorityQueue<>(); // min-heap keeps k largest
+        for (int x : data) {
+            topK.offer(x);
+            if (topK.size() > k) topK.poll(); // evict smallest
+        }
+        List<Integer> result = new ArrayList<>(topK);
+        Collections.sort(result, Collections.reverseOrder());
+        System.out.println("Top-" + k + " largest: " + result); // [9, 8, 7]
+
+        // Custom comparator: sort int[] pairs by second element (frequency map)
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+        pq.offer(new int[]{1, 5});
+        pq.offer(new int[]{2, 1});
+        pq.offer(new int[]{3, 3});
+        int[] least = pq.poll();
+        System.out.println("Pair with smallest freq: [val=" + least[0] + ", freq=" + least[1] + "]");
+    }
+}`} />
+
+---
+
+## Graph (Adjacency List)
+
+Graphs are almost always represented as `Map<Integer, List<Integer>>` in interviews. **BFS** finds the shortest path in an unweighted graph. **DFS** explores all reachable nodes and detects cycles.
+
+### Setup
+
+```java
+// Directed
+graph.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+
+// Undirected
+graph.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+graph.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
+```
+
+### BFS vs DFS
+
+| Property | BFS | DFS |
+|---|---|---|
+| Data structure | Queue | Stack (iterative) / recursion |
+| Finds shortest path? | ✓ (unweighted) | ✗ |
+| Memory (wide graphs) | High | Low |
+| Memory (deep graphs) | Low | High (stack overflow risk) |
+| Topological sort | ✗ | ✓ (reverse post-order) |
+| Connected components | ✓ | ✓ |
+| Cycle detection | ✓ | ✓ |
+
+### Complexity
+
+| Operation | Complexity |
+|---|---|
+| Build adjacency list | O(V + E) |
+| BFS / DFS traversal | O(V + E) |
+| Space (adjacency list) | O(V + E) |
+
+<RunnableJava code={`import java.util.*;
+
+public class Main {
+    static Map<Integer, List<Integer>> graph = new HashMap<>();
+
+    static void addEdge(int u, int v) {
+        graph.computeIfAbsent(u, k -> new ArrayList<>()).add(v);
+        graph.computeIfAbsent(v, k -> new ArrayList<>()).add(u); // undirected
+    }
+
+    // BFS: shortest path (returns distance or -1 if unreachable)
+    static int bfsDistance(int start, int target) {
+        if (start == target) return 0;
+        Set<Integer> visited = new HashSet<>();
+        Queue<Integer> queue = new ArrayDeque<>();
+        visited.add(start);
+        queue.offer(start);
+        int dist = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            dist++;
+            for (int i = 0; i < size; i++) {
+                int node = queue.poll();
+                for (int neighbor : graph.getOrDefault(node, Collections.emptyList())) {
+                    if (neighbor == target) return dist;
+                    if (visited.add(neighbor)) queue.offer(neighbor);
+                }
+            }
+        }
+        return -1; // unreachable
+    }
+
+    // DFS: collect all reachable nodes
+    static List<Integer> dfsReachable(int start) {
+        List<Integer> order = new ArrayList<>();
+        Set<Integer> visited = new HashSet<>();
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(start);
+        while (!stack.isEmpty()) {
+            int node = stack.pop();
+            if (!visited.add(node)) continue;
+            order.add(node);
+            List<Integer> neighbors = graph.getOrDefault(node, Collections.emptyList());
+            // reverse so left-to-right order matches recursive DFS
+            for (int i = neighbors.size() - 1; i >= 0; i--) {
+                if (!visited.contains(neighbors.get(i))) stack.push(neighbors.get(i));
+            }
+        }
+        return order;
+    }
+
+    public static void main(String[] args) {
+        //  1 - 2 - 4
+        //  |   |
+        //  3   5
+        addEdge(1, 2); addEdge(1, 3);
+        addEdge(2, 4); addEdge(2, 5);
+
+        System.out.println("BFS distance 1→4: " + bfsDistance(1, 4)); // 2
+        System.out.println("BFS distance 1→5: " + bfsDistance(1, 5)); // 2
+        System.out.println("DFS from 1: " + dfsReachable(1));         // [1, 2, 4, 5, 3]
+    }
+}`} />
+
+---
+
+## Master Complexity Table
+
+| Structure | Access | Insert | Delete | Search | Notes |
+|---|---|---|---|---|---|
+| `int[]` / `T[]` | O(1) | O(n)† | O(n)† | O(n) / O(log n)‡ | † fixed size; ‡ if sorted |
+| `ArrayList` | O(1) | O(1)* / O(n) | O(n) | O(n) | * amortized at end |
+| `LinkedList` | O(n) | O(1)§ | O(1)§ | O(n) | § at known node / ends |
+| `ArrayDeque` (Stack/Queue) | O(1) ends | O(1) | O(1) | — | push/pop/offer/poll all O(1) |
+| `HashMap` | — | O(1) avg | O(1) avg | O(1) avg | O(n) worst; allows null key |
+| `TreeMap` | — | O(log n) | O(log n) | O(log n) | sorted; floor/ceiling ops |
+| `LinkedHashMap` | — | O(1) avg | O(1) avg | O(1) avg | preserves insertion order |
+| `HashSet` | — | O(1) avg | O(1) avg | O(1) avg | backed by HashMap |
+| `TreeSet` | — | O(log n) | O(log n) | O(log n) | sorted; floor/ceiling ops |
+| `PriorityQueue` | O(1) top | O(log n) | O(log n) poll, O(n) arbitrary | O(n) | binary heap; min by default |
+| Graph (adj. list) | — | O(1) addEdge | O(E) | O(V+E) BFS/DFS | V = vertices, E = edges |
+
+---
+
+## Flashcards
+
+<Flashcard cards={[
+  {id: 'dsa-c1', front: 'Min-heap vs max-heap in Java?', back: 'new PriorityQueue<>() is a min-heap. For max-heap: new PriorityQueue<>(Collections.reverseOrder()) or (a,b)->b-a.'},
+  {id: 'dsa-c2', front: 'What does TreeMap.floorKey(k) return?', back: 'The largest key ≤ k in the map, or null if no such key exists.'},
+  {id: 'dsa-c3', front: 'Why use ArrayDeque instead of Stack?', back: 'Java\'s Stack class is synchronized legacy code backed by Vector. ArrayDeque is faster, unsynchronized, and the recommended idiom.'},
+  {id: 'dsa-c4', front: 'PriorityQueue.offer vs poll complexity?', back: 'offer (insert): O(log n). poll (remove head): O(log n). peek (view head): O(1).'},
+  {id: 'dsa-c5', front: 'BFS vs DFS: which finds the shortest path?', back: 'BFS finds the shortest path in an unweighted graph. DFS does not guarantee shortest path.'},
+  {id: 'dsa-c6', front: 'How do you implement LRU cache in Java?', back: 'Extend LinkedHashMap with accessOrder=true and override removeEldestEntry to evict when size exceeds capacity.'},
+  {id: 'dsa-c7', front: 'TreeSet.floor(e) vs ceiling(e)?', back: 'floor(e): largest element ≤ e. ceiling(e): smallest element ≥ e. Both return null if no such element exists.'},
+  {id: 'dsa-c8', front: 'HashMap.merge(k, 1, Integer::sum) — what does it do?', back: 'If key is absent, inserts value 1. If key is present, adds 1 to the existing value. Standard frequency-count idiom.'},
+  {id: 'dsa-c9', front: 'Top-K largest elements — which heap type and why?', back: 'Use a min-heap of size K. When size exceeds K, poll the smallest. Whatever remains are the K largest. O(n log k).'},
+  {id: 'dsa-c10', front: 'Graph adjacency list — how to build one in Java?', back: 'Map<Integer, List<Integer>> graph = new HashMap<>(); graph.computeIfAbsent(u, k->new ArrayList<>()).add(v);'},
+]} />
+
+---
+
+## Quiz
+
+<Quiz id="dsa-quiz" questions={[
+  {id: 'dsa-q1', prompt: 'PriorityQueue.poll() time complexity?', options: ['O(1)', 'O(log n)', 'O(n)'], correctIndex: 1, explanation: 'poll() removes the head and re-heapifies in O(log n). Only peek() is O(1).'},
+  {id: 'dsa-q2', prompt: 'Which structure preserves insertion order while offering O(1) get/put?', options: ['TreeMap', 'HashMap', 'LinkedHashMap'], correctIndex: 2, explanation: 'LinkedHashMap maintains a doubly-linked list of entries in insertion order with O(1) hash operations.'},
+  {id: 'dsa-q3', prompt: 'Preferred Stack implementation in Java?', options: ['java.util.Stack', 'ArrayDeque', 'LinkedList'], correctIndex: 1, explanation: 'ArrayDeque is faster and non-synchronized. Stack is a legacy class backed by the old Vector.'},
+  {id: 'dsa-q4', prompt: 'TreeSet.floor(25) on {10, 20, 30} returns?', options: ['20', '30', 'null'], correctIndex: 0, explanation: 'floor(25) returns the largest element ≤ 25, which is 20.'},
+  {id: 'dsa-q5', prompt: 'Which algorithm guarantees shortest path in an unweighted graph?', options: ['DFS', 'BFS', 'Both'], correctIndex: 1, explanation: 'BFS explores nodes level by level, so the first time it reaches a node it is via the shortest path. DFS makes no such guarantee.'},
+  {id: 'dsa-q6', prompt: 'Average time complexity of HashMap.containsKey()?', options: ['O(log n)', 'O(n)', 'O(1)'], correctIndex: 2, explanation: 'HashMap uses hashing so containsKey is O(1) average. TreeMap would be O(log n).'},
+]} />
