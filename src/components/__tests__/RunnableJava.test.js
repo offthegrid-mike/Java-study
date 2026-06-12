@@ -12,16 +12,16 @@ test('renders the initial code and a Run button', () => {
   expect(screen.getByRole('button', {name: /run/i})).toBeInTheDocument();
 });
 
-test('runs code and shows the Piston stdout', async () => {
+test('runs code and shows the Wandbox stdout', async () => {
   global.fetch = jest.fn().mockResolvedValue({
     ok: true,
-    json: async () => ({run: {output: 'Hello from Java!\n'}}),
+    json: async () => ({program_output: 'Hello from Java!\n'}),
   });
   render(<RunnableJava code={'class Main {}'} />);
   fireEvent.click(screen.getByRole('button', {name: /run/i}));
   await waitFor(() => expect(screen.getByText(/Hello from Java!/)).toBeInTheDocument());
   expect(global.fetch).toHaveBeenCalledWith(
-    'https://emkc.org/api/v2/piston/execute',
+    'https://wandbox.org/api/compile.json',
     expect.objectContaining({method: 'POST'}),
   );
 });

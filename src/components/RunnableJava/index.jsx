@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 
-const PISTON_URL = 'https://emkc.org/api/v2/piston/execute';
+const WANDBOX_URL = 'https://wandbox.org/api/compile.json';
 
-export default function RunnableJava({code, version = '15.0.2'}) {
+export default function RunnableJava({code, compiler = 'openjdk-head'}) {
   const [source, setSource] = useState(code);
   const [output, setOutput] = useState('');
   const [running, setRunning] = useState(false);
@@ -11,21 +11,17 @@ export default function RunnableJava({code, version = '15.0.2'}) {
     setRunning(true);
     setOutput('Running…');
     try {
-      const res = await fetch(PISTON_URL, {
+      const res = await fetch(WANDBOX_URL, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          language: 'java',
-          version,
-          files: [{name: 'Main.java', content: source}],
-        }),
+        body: JSON.stringify({compiler, code: source}),
       });
       if (!res.ok) {
         setOutput(`Error: HTTP ${res.status}${res.status === 429 ? ' (rate limited — wait a moment and retry)' : ''}`);
         return;
       }
       const data = await res.json();
-      setOutput((data.run && (data.run.output || data.run.stderr)) || 'No output.');
+      setOutput(data.compiler_error || data.program_output || data.program_error || 'No output.');
     } catch (e) {
       setOutput(`Network error: ${e.message}`);
     } finally {
