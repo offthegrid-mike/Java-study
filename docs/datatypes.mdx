@@ -60,22 +60,22 @@ int back = (int) d;  // narrowing, explicit cast required
 Run autoboxing plus widening:
 
 <RunnableJava code={`public class Main {
-  public static void main(String[] args) {
-    // Autoboxing: primitive int -> Integer wrapper
-    Integer boxed = 42;        // autoboxed
-    int unboxed = boxed;       // unboxed
-    System.out.println("Boxed=" + boxed + ", unboxed=" + unboxed);
+    public static void main(String[] args) {
+        // Autoboxing: primitive int -> Integer wrapper
+        Integer boxed = 42;        // autoboxed
+        int unboxed = boxed;       // unboxed
+        System.out.println("Boxed=" + boxed + ", unboxed=" + unboxed);
 
-    // Widening: int promoted to double in the expression
-    int count = 5;
-    double avg = count / 2.0;  // int widened to double
-    System.out.println("avg=" + avg);
+        // Widening: int promoted to double in the expression
+        int count = 5;
+        double avg = count / 2.0;  // int widened to double
+        System.out.println("avg=" + avg);
 
-    // Narrowing requires an explicit cast
-    double pi = 3.99;
-    int truncated = (int) pi;  // loses the fraction
-    System.out.println("truncated=" + truncated);
-  }
+        // Narrowing requires an explicit cast
+        double pi = 3.99;
+        int truncated = (int) pi;  // loses the fraction
+        System.out.println("truncated=" + truncated);
+    }
 }`} />
 
 ## Flashcards
