@@ -8,3 +8,4 @@ Loop memory: one entry per completed task. On resume, read this first.
 - Task 3 FIX: bumped @testing-library/react to v16 (+@testing-library/dom) for React 19; clean npm install verified (no legacy-peer-deps).
 
 - Task 4 DONE (useProgress hook, 3/3 tests pass). next: Task 5
+- Task 5 DONE (scoreQuiz, 3/3 tests pass). next: Task 6
