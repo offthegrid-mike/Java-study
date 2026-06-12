@@ -42,7 +42,7 @@ A fixed-size block of contiguous memory. The `Arrays` utility class provides sor
 
 <RunnableJava code={`import java.util.Arrays;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         int[] arr = {5, 2, 8, 1, 9, 3};
 
@@ -94,7 +94,7 @@ Backed by a resizable array. The default `List` choice. `Collections` helpers co
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         List<Integer> list = new ArrayList<>(Arrays.asList(5, 2, 8, 1, 9));
 
@@ -152,7 +152,7 @@ Java's legacy `Stack` class is a synchronized `Vector` — **avoid it**. Use `Ar
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         // LIFO: always declare as Deque, implement with ArrayDeque
         Deque<Integer> stack = new ArrayDeque<>();
@@ -209,7 +209,7 @@ All operations above are **O(1)**.
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         // Queue: FIFO
         Queue<String> queue = new ArrayDeque<>();
@@ -270,7 +270,7 @@ The standard hash table. O(1) average for all operations. Keys must implement `h
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         // Frequency count — most common interview pattern
         String[] words = {"apple", "banana", "apple", "cherry", "banana", "apple"};
@@ -322,7 +322,7 @@ A red-black tree map — keys stay sorted at all times. All ops are O(log n). Th
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         TreeMap<Integer, String> tm = new TreeMap<>();
         tm.put(10, "ten");
@@ -362,7 +362,7 @@ Identical to `HashMap` in performance (O(1) avg) but preserves **insertion order
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         // Insertion-order: useful when output order must match input order
         Map<String, Integer> scores = new LinkedHashMap<>();
@@ -406,7 +406,7 @@ Backed by a `HashMap`. O(1) average for all operations. No ordering, no duplicat
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         Set<Integer> a = new HashSet<>(Arrays.asList(1, 2, 3, 4, 5));
         Set<Integer> b = new HashSet<>(Arrays.asList(3, 4, 5, 6, 7));
@@ -465,7 +465,7 @@ A `NavigableSet` backed by a red-black tree. Like `TreeMap` but for values only.
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         TreeSet<Integer> ts = new TreeSet<>(Arrays.asList(10, 20, 30, 40, 50));
 
@@ -503,7 +503,7 @@ A binary heap. Default is a **min-heap** (smallest element at the head). For a m
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     public static void main(String[] args) {
         int[] data = {5, 1, 8, 3, 9, 2, 7};
 
@@ -581,7 +581,7 @@ graph.computeIfAbsent(v, k -> new ArrayList<>()).add(u);
 
 <RunnableJava code={`import java.util.*;
 
-public class Main {
+class Main {
     static Map<Integer, List<Integer>> graph = new HashMap<>();
 
     static void addEdge(int u, int v) {
